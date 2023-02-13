@@ -244,7 +244,7 @@ while not exit_game:
                 if cont == game_speed:
                     ball_x += ball_direction_x
                     ball_y += ball_direction_y
-                    cont = 40
+                    cont = 0
                     contSpeed += 1
 
                 if contSpeed==(screen_x):
