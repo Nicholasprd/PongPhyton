@@ -1,10 +1,5 @@
 #Criado com o intuito de não poluir o código.
 
-"""
-Aqui ficam as funções que auxiliam no funcionamento do game.
-
-"""
-
 def resetball(screen_x, screen_y):
     ball_x = int(screen_x/2)
     ball_y = int(screen_y/2)
