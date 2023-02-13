@@ -1,10 +1,9 @@
-import os
-import WConio2 as WConio2
-import cursor
-import math
+from WConio2 import kbhit, cputs, getch, gotoxy, clrscr, textcolor, WHITE, YELLOW
+from cursor import hide
+from Funcoes_Auxiliares import *
 
-cursor.hide()
-os.system('cls')
+hide()
+clrscr()
 
 #scoreboard
 score1 = 0
@@ -23,15 +22,15 @@ screen_x = 60
 
 #paddle 1
 paddle1_x = (screenMin_x+2)
-paddle1_y = math.ceil(screen_y/2)
+paddle1_y = int(screen_y/2)
 
 #paddle 2
 paddle2_x = (screen_x-3)
-paddle2_y = math.ceil(screen_y/2)
+paddle2_y = int(screen_y/2)
 
 #ball
-ball_x = math.ceil(screen_x/2)
-ball_y = math.ceil(screen_y/2)
+ball_x = int(screen_x/2)
+ball_y = int(screen_y/2)
 ball_direction_x = 1
 ball_direction_y = 1
 
@@ -46,56 +45,49 @@ contSpeed = 0
 cont = 0
 i = 0
 
-def resetball():
-    ball_x = math.ceil(screen_x/2)
-    ball_y = math.ceil(screen_y/2)
-    return ball_x, ball_y
-
 # List of menu options
 menuDesign = ["\n ==============================\n|  _____   ____  _   _  _____  |\n| |  __ \ / __ \| \ | |/ ____| |\n| | |__) | |  | |  \| | |  __  |\n| |  ___/| |  | | . ` | | |_ | |\n| | |    | |__| | |\  | |__| | |\n| |_|     \____/|_| \_|\_____| |\n ============================== \n"]
 options = ["     \n _____        _____       \n|  __ \      |  __ \      \n| |__) |_   _| |__) |     \n|  ___/\ \ / /  ___/      \n| |     \ V /| |          \n|_|      \_/ |_|                         ", "     \n _____        __  __      \n|  __ \      |  \/  |     \n| |__) |_   _| \  / |     \n|  ___/\ \ / / |\/| |     \n| |     \ V /| |  | |     \n|_|      \_/ |_|  |_|","     \n _    _ _       _                                 \n| |  | (_)     | |                                \n| |__| |_  __ _| |__  ___  ___ ___  _ __ ___      \n|  __  | |/ _` | '_ \/ __|/ __/ _ \| '__/ _ \     \n| |  | | | (_| | | | \__ \ (_| (_) | | |  __/     \n|_|  |_|_|\__, |_| |_|___/\___\___/|_|  \___|     \n           __/ |                                  \n          |___/                              ","     \n  ____        _ _        \n / __ \      (_) |       \n| |  | |_   _ _| |_      \n| |  | | | | | | __|     \n| |__| | |_| | | |_      \n \___\_\\__,_|_|\__|"]
 
 # Initialize selected option
 selected_option = 0
+exit_game = False
 
-while True:
-      # Clear screen
-    WConio2.clrscr()
-    # Print menu desgin
-    WConio2.gotoxy(5,5)
-    for i in range(len(menuDesign)):
-        WConio2.textcolor(WConio2.WHITE)
-        WConio2.cputs(menuDesign[i])
+while not exit_game:
     # Clear screen
-  
+    clrscr()
+
+    # Print menu desgin
+    gotoxy(5,5)
+    for i in range(len(menuDesign)):
+        textcolor(WHITE)
+        cputs(" " * 50 + menuDesign[i])
+    
     # Print menu options
     for i in range(len(options)):
-        WConio2.textcolor(WConio2.WHITE)
+        textcolor(WHITE)
         if i == selected_option:
-            WConio2.textcolor(WConio2.YELLOW)
-        WConio2.cputs(options[i])
-        WConio2.cputs("\n")
+            textcolor(YELLOW)
+        cputs(options[i] + '\n')
 
     # Get user input
-    key = WConio2.getch()
-
-    key = key[1];
+    key = getch()[1]
 
     # Navigate through menu options
-    if key == 'w' or key == 'W':
-        if selected_option > 0:
-            selected_option -= 1
-    elif key == 's' or key == 'S':
-        if selected_option < len(options) - 1:
-            selected_option += 1
+    if (key in ['w', 'W']) and (selected_option > 0) :
+        selected_option -= 1
+
+    elif (key in ['s', 'S']) and (selected_option < (len(options) - 1)):
+        selected_option += 1
+        
     elif key == '\r':
         # Perform action based on selected option
         
         #Playe vs Player        
         if selected_option == 0: 
-            WConio2.clrscr()                   
+            clrscr()                   
             while not game_over:
-                WConio2.gotoxy(0,screenPos_y)
+                gotoxy(0,screenPos_y)
 
                 # draw the score
                 print(' '*screenPos_x,"Player 1: " + str(score1) + "  Player 2: " + str(score2) + " GameSpeed: " + str(game_speed))
@@ -154,7 +146,7 @@ while True:
                     game_speed = game_speed_start
 
                     #reset ball
-                    ball_x, ball_y = resetball()
+                    ball_x, ball_y = resetball(screen_x, screen_y)
 
                 elif ball_x >= (screen_x):
                     score1 += 1
@@ -162,7 +154,7 @@ while True:
                     game_speed = game_speed_start
 
                     #reset ball
-                    ball_x, ball_y = resetball()
+                    ball_x, ball_y = resetball(screen_x, screen_y)
 
                 # bounce the ball off the walls
                 
@@ -177,8 +169,8 @@ while True:
                     game_over = True
 
                 # check for player input
-                if WConio2.kbhit():
-                    (key, symbol) = WConio2.getch()
+                if kbhit():
+                    (key, symbol) = getch()
                     
                     if symbol == "w":
                         paddle1_y -= 1
@@ -202,19 +194,19 @@ while True:
                 cont+=1
 
             if score1 >= max_score:
-                os.system('cls')
+                clrscr()
                 print("Player 1 wins!")
                 break
             else:
-                os.system('cls')
+                clrscr()
                 print("Player 2 wins!")
                 break
 
         #player vs AI
         elif selected_option == 1:
-            WConio2.clrscr()
+            clrscr()
             while not game_over:
-                WConio2.gotoxy(0,screenPos_y)
+                gotoxy(0,screenPos_y)
 
                 # draw the score
                 print(' '*screenPos_x,"Player 1: " + str(score1) + "  Player 2: " + str(score2) + " GameSpeed: " + str(game_speed))
@@ -280,7 +272,7 @@ while True:
                     game_speed = game_speed_start
 
                     #reset ball
-                    ball_x, ball_y = resetball()
+                    ball_x, ball_y = resetball(screen_x, screen_y)
 
                 elif ball_x >= (screen_x):
                     score1 += 1
@@ -288,7 +280,7 @@ while True:
                     game_speed = game_speed_start
 
                     #reset ball
-                    ball_x, ball_y = resetball()
+                    ball_x, ball_y = resetball(screen_x, screen_y)
 
                 # bounce the ball off the walls
                 
@@ -303,8 +295,8 @@ while True:
                     game_over = True
 
                 # check for player input
-                if WConio2.kbhit():
-                    (key, symbol) = WConio2.getch()
+                if kbhit():
+                    (key, symbol) = getch()
                     
                     if symbol == "w":
                         paddle1_y -= 1
@@ -324,16 +316,16 @@ while True:
                 cont+=1
 
             if score1 >= max_score:
-                os.system('cls')
+                clrscr()
                 print("Player 1 wins!")
                 break
             else:
-                os.system('cls')
+                clrscr()
                 print("Player 2 wins!")
                 break
 
         #Desligando o jogo
         elif selected_option == 3:
-            WConio2.clrscr()
+            clrscr()
             print("O jogo foi encerrado")
             break
